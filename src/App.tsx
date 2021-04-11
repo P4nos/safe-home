@@ -1,26 +1,73 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Web3ReactProvider } from "@web3-react/core";
+import { providers } from "ethers";
+import Web3ConnectionManager from "./components/Web3ConnectionManager/Web3ConnectionManager";
+import { AppLayout } from "./components/AppLayout";
+import { StyledNavLink } from "./views/Button";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import ClaimInsurance from "./components/ClaimInsurance";
+import CreateInsurance from "./components/CreateInsurance";
+import UpdateInsurance from "./components/UpdateInsurance";
+import { Grid } from "@material-ui/core";
+import { connect } from "react-redux";
+import { userHasInsurance } from "./redux/selectors";
 
-function App() {
+function getLibrary(provider: any, connector: any) {
+  return new providers.Web3Provider(provider, "any"); // this will vary according to whether you use e.g. ethers or web3.js
+}
+
+function App({ hasInsurance }) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Web3ConnectionManager>
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/">
+              <AppLayout>
+                <Grid container justify="center" spacing={2}>
+                  <Grid item>
+                    {hasInsurance ? (
+                      <StyledNavLink to="/update">
+                        Update Insurance
+                      </StyledNavLink>
+                    ) : (
+                      <StyledNavLink to="/create">
+                        Create Insurance
+                      </StyledNavLink>
+                    )}
+                  </Grid>
+                  <Grid item>
+                    <StyledNavLink to="/claim">Claim Insurance</StyledNavLink>
+                  </Grid>
+                </Grid>
+              </AppLayout>
+            </Route>
+
+            <Route path="/create">
+              <AppLayout>
+                <CreateInsurance />
+              </AppLayout>
+            </Route>
+
+            <Route path="/claim">
+              <AppLayout>
+                <ClaimInsurance />
+              </AppLayout>
+            </Route>
+
+            <Route path="/update">
+              <AppLayout>
+                <UpdateInsurance />
+              </AppLayout>
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </Web3ConnectionManager>
+    </Web3ReactProvider>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  hasInsurance: userHasInsurance(state),
+});
+export default connect(mapStateToProps)(App);
