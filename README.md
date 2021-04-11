@@ -11,3 +11,13 @@ HomeSafe is a home insurance protocol that settles claims on-chain by substituti
 The HomeSafe protocol can leverage the output of these sensors and determine when an insurance claim is valid and proceed with finalizing the payment to the user. The claim amount is determined from the size of the pool, the type of insurance the user has and the current stake of the user in the pool. The claim amount is also affected by the total number of claims the user has done in the past.
 
 _This project was part of the Virtual Chainlink Hackathon Spring 2021_
+
+## Run
+First install required packages
+`yarn add`
+
+Then run
+`npm start`
+
+## Contracts
+The smart contracts for this application can be found [here](https://github.com/P4nos/safe-home-contracts)
